@@ -18,7 +18,7 @@ package securesocial.core.java;
 
 import play.api.mvc.RequestHeader;
 import play.libs.F;
-import play.libs.HttpExecution;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import scala.Option;
 import scala.concurrent.ExecutionContext;
@@ -73,10 +73,10 @@ public class SecureSocial {
             return F.Promise.promise(null);
         } else {
             scala.concurrent.Future scalaFuture = SecureSocial$.MODULE$.currentUser(requestHeader, env, executor);
-            F.Function<Option<Object>, Object> mapFunction = new F.Function<Option<Object>, Object>() {
+            java.util.function.Function<Option<Object>, Object> mapFunction = new java.util.function.Function<Option<Object>, Object>() {
 
                 @Override
-                public Object apply(Option<Object> objectOption) throws Throwable {
+                public Object apply(Option<Object> objectOption) {
                     return objectOption.isDefined() ? objectOption.get() : null;
                 }
             };

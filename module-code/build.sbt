@@ -27,9 +27,9 @@ resolvers ++= Seq(
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
-organization := "ws.securesocial"
+organization := "com.skrey.ws.securesocial"
 
-organizationName := "SecureSocial"
+organizationName := "Skrey"
 
 organizationHomepage := Some(new URL("http://www.securesocial.ws"))
 

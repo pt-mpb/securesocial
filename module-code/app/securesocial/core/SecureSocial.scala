@@ -19,11 +19,11 @@ package securesocial.core
 import play.api.mvc._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.http.HeaderNames
+import play.api.http.{ HeaderNames, MimeTypes }
 import securesocial.core.SecureSocial.{ RequestWithUser, SecuredRequest }
+
 import scala.concurrent.{ ExecutionContext, Future }
 import play.twirl.api.Html
-
 import securesocial.core.utils._
 import securesocial.core.authenticator._
 import play.api.mvc.Result

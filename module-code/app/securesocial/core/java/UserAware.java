@@ -26,6 +26,7 @@ import securesocial.core.authenticator.Authenticator;
 
 import static play.libs.F.Promise;
 import javax.inject.Inject;
+import java.util.concurrent.CompletionStage;
 
 /**
  * An action that puts the current user in the context if there's one available. This is useful in
@@ -50,21 +51,24 @@ public class UserAware extends Action<UserAwareAction> {
     }
 
     @Override
-    public F.Promise<Result> call(final Http.Context ctx) throws Throwable {
-        Secured.initEnv(env);
+    public F.Promise<Result> call(final Http.Context ctx) {
+        try {
+            Secured.initEnv(env);
+        }
+        catch (Throwable t) { }
         return  F.Promise.wrap(env.authenticatorService().fromRequest(ctx._requestHeader())).flatMap(
-                new F.Function<Option<Authenticator<Object>>, Promise<Result>>() {
+                new java.util.function.Function<Option<Authenticator<Object>>, CompletionStage<Result>>() {
                     @Override
-                    public Promise<Result> apply(Option<Authenticator<Object>> authenticatorOption) throws Throwable {
+                    public CompletionStage<Result> apply(Option<Authenticator<Object>> authenticatorOption) {
                         if (authenticatorOption.isDefined() && authenticatorOption.get().isValid()) {
                             Authenticator authenticator = authenticatorOption.get();
-                            return F.Promise.wrap(authenticator.touch()).flatMap(new F.Function<Authenticator, Promise<Result>>() {
+                            return F.Promise.wrap(authenticator.touch()).flatMap(new java.util.function.Function<Authenticator, Promise<Result>>() {
                                 @Override
-                                public Promise<Result> apply(Authenticator touched) throws Throwable {
+                                public Promise<Result> apply(Authenticator touched) {
                                     ctx.args.put(SecureSocial.USER_KEY, touched.user());
-                                    return F.Promise.wrap(touched.touching(ctx)).flatMap(new F.Function<scala.runtime.BoxedUnit, Promise<Result>>() {
+                                    return F.Promise.wrap(touched.touching(ctx)).flatMap(new java.util.function.Function<scala.runtime.BoxedUnit, CompletionStage<Result>>() {
                                         @Override
-                                        public Promise<Result> apply(scala.runtime.BoxedUnit unit) throws Throwable {
+                                        public CompletionStage<Result> apply(scala.runtime.BoxedUnit unit) {
                                             return delegate.call(ctx);
                                         }
                                     });

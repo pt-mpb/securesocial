@@ -26,6 +26,7 @@ import securesocial.core.RuntimeEnvironment;
 import securesocial.core.authenticator.Authenticator;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Protects an action with SecureSocial
@@ -57,25 +58,28 @@ public class Secured extends Action<SecuredAction> {
 
 
     @Override
-    public F.Promise<Result> call(final Http.Context ctx) throws Throwable {
-        initEnv(env);
-        authorizationInstance = configuration.authorization().newInstance();
-        responses = configuration.responses().newInstance();
+    public F.Promise<Result> call(final Http.Context ctx) {
+        try {
+            initEnv(env);
+            authorizationInstance = configuration.authorization().newInstance();
+            responses = configuration.responses().newInstance();
+        }
+        catch (Throwable e) { }
         return F.Promise.wrap(env.authenticatorService().fromRequest(ctx._requestHeader())).flatMap(
-                new F.Function<Option<Authenticator<Object>>, F.Promise<Result>>() {
+                new java.util.function.Function<Option<Authenticator<Object>>, F.Promise<Result>>() {
                     @Override
-                    public F.Promise<Result> apply(Option<Authenticator<Object>> authenticatorOption) throws Throwable {
+                    public F.Promise<Result> apply(Option<Authenticator<Object>> authenticatorOption) {
                         if (authenticatorOption.isDefined() && authenticatorOption.get().isValid()) {
                             final Authenticator authenticator = authenticatorOption.get();
                             Object user = authenticator.user();
                             if (authorizationInstance.isAuthorized(user, configuration.params())) {
-                                return F.Promise.wrap(authenticator.touch()).flatMap(new F.Function<Authenticator, F.Promise<Result>>() {
+                                return F.Promise.wrap(authenticator.touch()).flatMap(new java.util.function.Function<Authenticator, F.Promise<Result>>() {
                                     @Override
-                                    public F.Promise<Result> apply(Authenticator touched) throws Throwable {
+                                    public F.Promise<Result> apply(Authenticator touched) {
                                         ctx.args.put(SecureSocial.USER_KEY, touched.user());
-                                        return F.Promise.wrap(touched.touching(ctx)).flatMap(new F.Function<scala.runtime.BoxedUnit, F.Promise<Result>>() {
+                                        return F.Promise.wrap(touched.touching(ctx)).flatMap(new java.util.function.Function<scala.runtime.BoxedUnit, CompletionStage<Result>>() {
                                             @Override
-                                            public F.Promise<Result> apply(scala.runtime.BoxedUnit unit) throws Throwable {
+                                            public CompletionStage<Result> apply(scala.runtime.BoxedUnit unit) {
                                                 return delegate.call(ctx);
                                             }
                                         });
@@ -87,9 +91,9 @@ public class Secured extends Action<SecuredAction> {
                         } else {
                             if (authenticatorOption.isDefined()) {
                                 return F.Promise.wrap(authenticatorOption.get().discarding(ctx)).flatMap(
-                                        new F.Function<BoxedUnit, F.Promise<Result>>() {
+                                        new java.util.function.Function<BoxedUnit, F.Promise<Result>>() {
                                             @Override
-                                            public F.Promise<Result> apply(BoxedUnit unit) throws Throwable {
+                                            public F.Promise<Result> apply(BoxedUnit unit) {
                                                 return responses.notAuthenticatedResult(ctx);
                                             }
                                         }

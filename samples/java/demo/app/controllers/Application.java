@@ -97,9 +97,9 @@ public class Application extends Controller {
      * Sample use of SecureSocial.currentUser. Access the /current-user to test it
      */
     public F.Promise<Result> currentUser() {
-        return SecureSocial.currentUser(env).map( new F.Function<Object, Result>() {
+        return SecureSocial.currentUser(env).map( new java.util.function.Function<Object, Result>() {
             @Override
-            public Result apply(Object maybeUser) throws Throwable {
+            public Result apply(Object maybeUser) {
                 String id;
 
                 if ( maybeUser != null ) {

@@ -46,9 +46,9 @@ public abstract class BaseUserService<U> implements UserService<U> {
      */
     @Override
     public Future<Option<BasicProfile>> find(String providerId, String userId) {
-        return doFind(providerId, userId).map(new F.Function<BasicProfile, Option<BasicProfile>>() {
+        return doFind(providerId, userId).map(new java.util.function.Function<BasicProfile, Option<BasicProfile>>() {
             @Override
-            public Option<BasicProfile> apply(BasicProfile user) throws Throwable {
+            public Option<BasicProfile> apply(BasicProfile user) {
                 return Scala.Option(user);
             }
         }).wrapped();
@@ -66,8 +66,8 @@ public abstract class BaseUserService<U> implements UserService<U> {
      */
     @Override
     public Future<Option<BasicProfile>> findByEmailAndProvider(String email, String providerId) {
-        return doFindByEmailAndProvider(email, providerId).map(new F.Function<BasicProfile, Option<BasicProfile>>() {
-            public Option<BasicProfile> apply(BasicProfile user) throws Throwable {
+        return doFindByEmailAndProvider(email, providerId).map(new java.util.function.Function<BasicProfile, Option<BasicProfile>>() {
+            public Option<BasicProfile> apply(BasicProfile user) {
                 return Scala.Option(user);
             }
         }).wrapped();
@@ -97,9 +97,9 @@ public abstract class BaseUserService<U> implements UserService<U> {
 
     @Override
     public Future<scala.Option<PasswordInfo>> passwordInfoFor(U user) {
-        return doPasswordInfoFor(user).map(new F.Function<PasswordInfo, Option<PasswordInfo>>() {
+        return doPasswordInfoFor(user).map(new java.util.function.Function<PasswordInfo, Option<PasswordInfo>>() {
             @Override
-            public Option<PasswordInfo> apply(PasswordInfo passwordInfo) throws Throwable {
+            public Option<PasswordInfo> apply(PasswordInfo passwordInfo) {
                 return Scala.Option(passwordInfo);
             }
         }).wrapped();
@@ -107,9 +107,9 @@ public abstract class BaseUserService<U> implements UserService<U> {
 
     @Override
     public Future<scala.Option<BasicProfile>> updatePasswordInfo(U user, PasswordInfo info) {
-        return doUpdatePasswordInfo(user, info).map(new F.Function<BasicProfile, Option<BasicProfile>>() {
+        return doUpdatePasswordInfo(user, info).map(new java.util.function.Function<BasicProfile, Option<BasicProfile>>() {
             @Override
-            public Option<BasicProfile> apply(BasicProfile basicProfile) throws Throwable {
+            public Option<BasicProfile> apply(BasicProfile basicProfile) {
                 return Scala.Option(basicProfile);
             }
         }).wrapped();
@@ -127,9 +127,9 @@ public abstract class BaseUserService<U> implements UserService<U> {
      */
     @Override
     public Future<MailToken> saveToken(MailToken mailToken) {
-        return doSaveToken(Token.fromScala(mailToken)).map(new F.Function<Token, MailToken>() {
+        return doSaveToken(Token.fromScala(mailToken)).map(new java.util.function.Function<Token, MailToken>() {
             @Override
-            public MailToken apply(Token token) throws Throwable {
+            public MailToken apply(Token token) {
                 return token.toScala();
             }
         }).wrapped();
@@ -146,9 +146,9 @@ public abstract class BaseUserService<U> implements UserService<U> {
      */
     @Override
     public Future<Option<MailToken>> findToken(String token) {
-        return doFindToken(token).map(new F.Function<Token, Option<MailToken>>() {
+        return doFindToken(token).map(new java.util.function.Function<Token, Option<MailToken>>() {
             @Override
-            public Option<MailToken> apply(Token token) throws Throwable {
+            public Option<MailToken> apply(Token token) {
                 MailToken scalaToken =  token  != null ? token.toScala() : null;
                 return Scala.Option(scalaToken);
             }
@@ -165,9 +165,9 @@ public abstract class BaseUserService<U> implements UserService<U> {
      */
     @Override
     public Future<scala.Option<MailToken>> deleteToken(String uuid) {
-        return doDeleteToken(uuid).map(new F.Function<Token, Option<MailToken>>() {
+        return doDeleteToken(uuid).map(new java.util.function.Function<Token, Option<MailToken>>() {
             @Override
-            public Option<MailToken> apply(Token token) throws Throwable {
+            public Option<MailToken> apply(Token token) {
                 MailToken scalaToken =  token  != null ? token.toScala() : null;
                 return Scala.Option(scalaToken);
             }
